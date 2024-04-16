@@ -1,10 +1,15 @@
 import requests
+import sys
 
 #hledani podle ičo
 ico = input("Zadejte IČO:")
 adresa = f"https://ares.gov.cz/ekonomicke-subjekty-v-be/rest/ekonomicke-subjekty/{ico}"
 response = requests.get(url=adresa)
 data = response.json()
+
+if response.status_code != 200:
+    print("IČO nebylo nalezeno nebo server neodpovídá.")
+    sys.exit()
 
 obchodni_jmeno = data["obchodniJmeno"]
 adresa_sidla = data["sidlo"]["textovaAdresa"]
@@ -13,7 +18,7 @@ print(obchodni_jmeno,"\n", adresa_sidla)
 
 
 #hledani podle jmena nebo jeho casti
-#bonus - právní forma
+#bonus - pravni forma
 
 headers = {
     "accept": "application/json",
@@ -55,5 +60,3 @@ for subjekt in ekon_subjekty:
     kod = subjekt['pravniForma']
     pravni_forma = find_legal_form(kod, polozky_ciselniku)
     print(f"{subjekt['obchodniJmeno']}, {subjekt['ico']}, {pravni_forma}")
-
-
